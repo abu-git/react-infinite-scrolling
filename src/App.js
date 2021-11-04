@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import useBookSearch from "./useBookSearch";
 
 function App() {
@@ -12,16 +12,17 @@ function App() {
     error
   } = useBookSearch(query, pageNumber)
 
-  const observer = useRef<IntersectionObserver>(null)
+  const observer = useRef()
   const lastBookElementRef = useCallback(node => {
     console.log(node)
-    console.log(observer.current)
+    //console.log(observer.current)
     //node corresponds to book div in books.map()
     if(loading) return
     if(observer.current) observer.current.disconnect()
     observer.current = new IntersectionObserver(entries => {
-      if(entries[0].isIntersecting){
+      if(entries[0].isIntersecting && hasMore){
         console.log('Visible')
+        setPageNumber(prevPageNumber => prevPageNumber + 1)
       }
     })
     if(node) observer.current.observe(node)
